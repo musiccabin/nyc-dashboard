@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { useNavigate } from "react-router-dom"
-import './App.css'
+import '../App.css'
 
-import BarChart from "./components/charts/PlotlyBarChart"
-import ScatterPlot from "./components/charts/ScatterPlot"
-import  BoxPlot from './components/charts/BoxPlot'
-import Filters from "./components/Filters"
-import { predict } from "./ml/predict"
+import BarChart from "../components/charts/PlotlyBarChart"
+import ScatterPlot from "../components/charts/ScatterPlot"
+import  BoxPlot from '../components/charts/BoxPlot'
+import Filters from "../components/Filters"
+import { predict } from "../ml/predict"
 
 const App: React.FC = () => {
   const navigate = useNavigate();

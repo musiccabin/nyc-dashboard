@@ -1,8 +1,8 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import LandingPage from "./LandingPage";
-import CustomerView from "./CustomerView";
-import BusinessView from "./BusinessView";
+import { Routes, Route } from "react-router-dom"
+import LandingPage from "./LandingPage"
+import CustomerView from "./pages/CustomerView"
+import BusinessView from "./pages/BusinessView"
 
 const App: React.FC = () => {
  return (
