@@ -1,14 +1,11 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.routers import metrics
 from app.routers import health
 
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
-from app.routers import metrics
-
 app = FastAPI()
 
-app.include_router(metrics.router)
+app.include_router(metrics.router, prefix="/metrics")
 app.include_router(health.router)
 
 origins = [

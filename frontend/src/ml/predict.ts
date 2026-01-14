@@ -1,5 +1,4 @@
 interface Features {
-  restaurant: string | null;
   cuisine: string | null;
   day: string | null;
 }

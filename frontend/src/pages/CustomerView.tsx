@@ -3,17 +3,16 @@ import '../App.css'
 
 import BusinessButton from '../components/buttons/BusinessButton'
 import TopRatedRestaurants from '../components/features/TopRatedRestaurants'
-import FastestRestaurants from '../components/features/FastestRestaurants'
+// import FastestRestaurants from '../components/features/FastestRestaurants'
 
 import Filters from "../components/Filters"
 import { predict } from "../ml/predict"
 
 const App: React.FC = () => {  
-  const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
   const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
-  const mlPrediction = predict({ restaurant: selectedRestaurant, cuisine: selectedCuisine, day: selectedDay });
+  const mlPrediction = predict({ cuisine: selectedCuisine, day: selectedDay });
 
   return (
     <div className="p-6 space-y-8">
@@ -24,8 +23,6 @@ const App: React.FC = () => {
 
       <div className="flex justify-center mb-6">
         <Filters
-          selectedRestaurant={selectedRestaurant}
-          setSelectedRestaurant={setSelectedRestaurant}
           selectedCuisine={selectedCuisine}
           setSelectedCuisine={setSelectedCuisine}
           selectedDay={selectedDay}
@@ -33,17 +30,23 @@ const App: React.FC = () => {
         />
       </div>
 
-      <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
-        <TopRatedRestaurants></TopRatedRestaurants>
-        <FastestRestaurants></FastestRestaurants>
+      <div>
+        <TopRatedRestaurants
+          selectedCuisine={selectedCuisine}
+          selectedDay={selectedDay}
+        ></TopRatedRestaurants>
+        {/* <FastestRestaurants 
+          selectedCuisine={selectedCuisine}
+          selectedDay={selectedDay}
+        ></FastestRestaurants> */}
       </div>
 
       <div className="text-lg font-semibold">
         Calculate Wait Time {mlPrediction}
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default App
 

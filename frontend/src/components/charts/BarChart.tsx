@@ -1,24 +1,25 @@
 import React from "react"
 import _ChartJS from "chart.js/auto"
 import { Bar } from "react-chartjs-2"
-import type { TopRestaurant, FastRestaurant } from "../../types/metrics"
+import type { TopRestaurant } from "../../types/metrics"
 interface ChartProps {
-  data: TopRestaurant[] | FastRestaurant[]
+  data: TopRestaurant[]
+  metric: string | null
 }
 
-const BarChart: React.FC<ChartProps> = ({ data }) => {
+const BarChart: React.FC<ChartProps> = ({ data, metric }) => {
   if (!data || data.length === 0) return null
 
   const labels = data.map(d => d.restaurant)
-  const values = data.map(d => ("avg_rating" in d ? d.avg_rating : d.fulfilment_time))
+  const values = data.map(d => (metric === "rating" ? d.avg_rating : d.avg_prep_time))
 
   const restaurants = {
     labels,
     datasets: [
       {
-        label: "avg_rating" in data[0] ? "Average Rating" : "Fulfillment Time (Minutes)",
+        label: metric === "rating" ? "Average Rating" : "Cooking time (Minutes)",
         data: values,
-        backgroundColor: "rgba(37, 99, 235)", // customer button (tailwind-bg-blue-600)
+        backgroundColor: metric === "rating" ? "rgba(37, 99, 235)" : "rgba(245, 140, 85, 1)", // customer button (tailwind-bg-blue-600)
       },
     ],
   }

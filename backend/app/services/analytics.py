@@ -1,41 +1,56 @@
+from typing import Optional
+from fastapi import Query
 from app.db import get_db
 
-def get_top_rated_restaurants():
+def get_top_rated_restaurants(
+        cuisine: Optional[str] = None,
+        day: Optional[str] = None
+    ):
     conn = get_db()
     cur = conn.cursor()
 
-    cur.execute("""
-        SELECT restaurant_name, AVG(rating) as avg_rating
-        FROM orders
-        WHERE rating IS NOT NULL
-        GROUP BY restaurant_name
-        HAVING COUNT(*) >= 5
-        ORDER BY avg_rating DESC
-        LIMIT 10
-    """)
+    query = "SELECT restaurant_name, AVG(rating) as avg_rating, AVG(food_preparation_time) as avg_prep_time FROM orders WHERE 1=1"
+    params = []
 
+    if cuisine:
+        query += " AND cuisine_type = ?"
+        params.append(cuisine)
+    if day:
+        query += " AND day_of_the_week = ?"
+        params.append(day)
+
+    query += " GROUP BY restaurant_name HAVING COUNT(*) >= 6 ORDER BY avg_rating DESC LIMIT 10"
+
+    cur.execute(query, params)
     rows = cur.fetchall()
     conn.close()
 
     return [
-        {"restaurant": r[0], "avg_rating": round(r[1], 2)}
+        {"restaurant": r[0], "avg_rating": round(r[1], 2), "avg_prep_time": round(r[2], 2)}
         for r in rows
     ]
 
 
-def get_fastest_restaurants():
+def get_fastest_restaurants(
+        cuisine: Optional[str] = None,
+        day: Optional[str] = None
+    ):
     conn = get_db()
     cur = conn.cursor()
 
-    cur.execute("""
-        SELECT restaurant_name, SUM(food_preparation_time + delivery_time) as fulfilment_time
-        FROM orders
-        GROUP BY restaurant_name
-        HAVING COUNT(*) >= 5
-        ORDER BY fulfilment_time
-        LIMIT 10
-    """)
+    query = "SELECT restaurant_name, AVG(food_preparation_time) as avg_prep_time FROM orders WHERE 1=1"
+    params = []
 
+    if cuisine:
+        query += " AND cuisine_type = ?"
+        params.append(cuisine)
+    if day:
+        query += " AND day_of_the_week = ?"
+        params.append(day)
+
+    query += " GROUP BY restaurant_name HAVING COUNT(*) >= 6 ORDER BY avg_prep_time LIMIT 10"
+
+    cur.execute(query, params)
     rows = cur.fetchall()
     conn.close()
 
