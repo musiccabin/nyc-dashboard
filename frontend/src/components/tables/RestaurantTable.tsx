@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react"
 import type { TopRestaurant } from "../../types/metrics"
+import WeekendIcon from '../../assets/weekend-borderless.png'
+import WeekdayIcon from '../../assets/weekday-borderless.png'
 
 type SortKey = "avg_rating" | "avg_prep_time"
 
@@ -74,26 +76,42 @@ export function RestaurantTable({ topRatedData }: Props) {
               <td className="pl-4 relative">
                 <span className="hover:underline cursor-pointer">
                   {r.name}
-                  <div className="absolute left-0 bottom-full mb-1 hidden hover:block bg-gray-700 text-white text-xs rounded px-2 py-1 z-10">
-                    Cuisine: {r.cuisine}, Cost of Order: ${r.avg_cost}
-                  </div>
                 </span>
               </td>
 
-              <td className="px-4 py-2">
+              <td className="px-4 py-2 flex items-center gap-2">
                 <span className="sm:hidden mr-1">⭐</span>
                 {r.avg_rating.toFixed(1)}
+                {r.higher_day === "Weekend" && (
+                  <img
+                    src={WeekendIcon}
+                    alt="Weekend"
+                    className="w-16 text-green-500"
+                  />
+                )}
+                {r.higher_day === "Weekday" && (
+                  <img
+                    src={WeekdayIcon}
+                    alt="Weekday"
+                    className="w-16 text-green-500"
+                  />
+                )}
               </td>
 
-              {/* <td className="px-4 py-2">
-                <span className="sm:hidden mr-1">⏱</span>
-                {r.avg_prep_time} minutes
-              </td> */}
               <td className="px-4 py-2">
-                <span className="sm:hidden mr-1">⏱</span>
-                {r.avg_prep_time < 25 && <span className="text-green-600">Fast</span>}
-                {r.avg_prep_time >= 25 && r.avg_prep_time <= 28 && <span className="text-yellow-600">Average</span>}
-                {r.avg_prep_time > 28 && <span className="text-red-600">Slow</span>}
+                <div className="flex items-center gap-2">
+                  <span className="sm:hidden mr-1">⏱</span>
+                  <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full
+                        ${r.avg_prep_time < 25 && "bg-green-500 w-1/3"}
+                        ${r.avg_prep_time >= 25 && r.avg_prep_time <= 28 && "bg-yellow-400 w-2/3"}
+                        ${r.avg_prep_time > 28 && "bg-red-500 w-full"}
+                      `}
+                    />
+                  </div>
+                  <span className="text-xs text-gray-500">{r.avg_prep_time}m</span>
+                </div>
               </td>
             </tr>
           ))}

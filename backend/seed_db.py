@@ -13,7 +13,7 @@ def parse_int(value):
 conn = sqlite3.connect("dashboard.db")
 cur = conn.cursor()
 
-# Create table
+# Create table: orders
 cur.execute("""
 CREATE TABLE IF NOT EXISTS orders (
     order_id INTEGER PRIMARY KEY,
@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS orders (
     delivery_time INTEGER
 )
 """)
+
+cur.execute("DELETE FROM orders;")
 
 # Read CSV and insert
 with open("../data/food_order.csv", newline='', encoding='utf-8') as csvfile:
@@ -48,6 +50,59 @@ with open("../data/food_order.csv", newline='', encoding='utf-8') as csvfile:
             parse_int(row["food_preparation_time"]),
             parse_int(row["delivery_time"])
         ))
+
+# Create table: restaurant_summary
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS restaurant_summary (
+        restaurant_name TEXT,
+        cuisine_type TEXT,
+        avg_rating REAL,
+        avg_cost REAL,
+        avg_prep_time REAL,
+        higher_day_type TEXT
+    );
+    """)
+
+cur.execute("DELETE FROM restaurant_summary;")
+
+# Derive restaurant-level summary metrics from order data
+cur.execute("""
+    INSERT INTO restaurant_summary (
+        restaurant_name,
+        cuisine_type,
+        avg_rating,
+        avg_cost,
+        avg_prep_time,
+        higher_day_type
+    )
+    SELECT
+        restaurant_name,
+        cuisine_type,
+        AVG(rating) AS avg_rating,
+        AVG(cost_of_the_order) AS avg_cost,
+        AVG(food_preparation_time) AS avg_prep_time,
+        CASE
+            WHEN
+                COUNT(CASE WHEN day_of_the_week = 'Weekday' THEN 1 END) >= 2
+            AND COUNT(CASE WHEN day_of_the_week = 'Weekend' THEN 1 END) >= 2
+            AND ABS(
+                AVG(CASE WHEN day_of_the_week = 'Weekday' THEN rating END) -
+                AVG(CASE WHEN day_of_the_week = 'Weekend' THEN rating END)
+            ) >= 0.2
+            THEN
+                CASE
+                    WHEN AVG(CASE WHEN day_of_the_week = 'Weekday' THEN rating END)
+                    > AVG(CASE WHEN day_of_the_week = 'Weekend' THEN rating END)
+                    THEN 'Weekday'
+                    ELSE 'Weekend'
+                END
+            ELSE NULL
+        END AS higher_day_type
+    FROM orders
+    GROUP BY restaurant_name
+    HAVING COUNT(*) >= 2 AND AVG(rating) >= 4;
+    """)
+
 
 conn.commit()
 conn.close()

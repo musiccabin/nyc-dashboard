@@ -1,34 +1,50 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import type { TopRestaurant } from "../../types/metrics"
-import { RestaurantTable } from "./RestaurantTable"
-// import BarChart from "../charts/BarChart"
-interface CustomerChartProps {
-  selectedCuisine: string | null
-  selectedDay: string | null
-}
+import { RestaurantTable } from "../tables/RestaurantTable"
+import Filters from "../../components/Filters"
 
-const TopRatedRestaurants: React.FC<CustomerChartProps> = ({ selectedCuisine, selectedDay }) => {
+import { cuisineOptions } from "../../constants/customerView"
+
+const TopRatedRestaurants: React.FC = () => {
   const [topRatedData, setTopRatedData] = useState<TopRestaurant[]>([])
 
-  // Fetch data from backend whenever filters change
+  // Fetch data from backend
   useEffect(() => {
     const fetchData = async () => {
-      const query = new URLSearchParams()
-      if (selectedCuisine) query.append("cuisine", selectedCuisine)
-      if (selectedDay) query.append("day", selectedDay)
-
-      const topRes = await fetch(`http://127.0.0.1:8000/metrics/top-rated-restaurants?${query.toString()}`)
+      const topRes = await fetch(`http://127.0.0.1:8000/metrics/top-rated-restaurants`)
       const topJson = await topRes.json()
       setTopRatedData(topJson)
     }
+    fetchData()
+    console.log(topRatedData)
+  }, [])
 
-    fetchData();
-  }, [selectedCuisine, selectedDay]);
+  const [selectedCuisines, setSelectedCuisines] = useState<string[]>(cuisineOptions)
+  const [selectedRating, setSelectedRating] = useState<number>(4)
+  const [selectedCost, setSelectedCost] = useState<number>(60)
+
+  const filteredData = useMemo(() => {
+  return topRatedData.filter((r) => {
+    const cuisineMatch = selectedCuisines.includes(r.cuisine)
+    const ratingMatch = r.avg_rating >= selectedRating
+    const costMatch = r.avg_cost <= selectedCost
+
+    return cuisineMatch && ratingMatch && costMatch
+  })
+}, [topRatedData, selectedCuisines, selectedRating, selectedCost])
 
   return (
-    // <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
-      <RestaurantTable topRatedData={topRatedData}></RestaurantTable>
-    // </div>
+    <div>
+      <Filters
+        selectedCuisines={selectedCuisines}
+        setSelectedCuisines={setSelectedCuisines}
+        selectedRating={selectedRating}
+        setSelectedRating={setSelectedRating}
+        selectedCost={selectedCost}
+        setSelectedCost={setSelectedCost}
+      />
+      <RestaurantTable topRatedData={filteredData}></RestaurantTable>
+    </div>
   )
 }
 
