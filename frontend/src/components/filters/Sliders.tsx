@@ -13,7 +13,7 @@ interface CostSliderProps {
 export function RatingSlider({ selectedRating, setSelectedRating }: RatingSliderProps) {
   return (
     <div>
-        <span className="font-semibold">Rating:  ★ {selectedRating.toFixed(1)}+</span>
+        <span className="block font-semibold mb-2">Rating:  ★ {selectedRating.toFixed(1)}+</span>
         <Slider.Root
             className="relative flex items-center w-full h-4 select-none touch-none"
             value={[selectedRating]}
@@ -27,8 +27,10 @@ export function RatingSlider({ selectedRating, setSelectedRating }: RatingSlider
                 className="absolute bg-gray-300 rounded-full h-full right-0"
                 />
             </Slider.Track>
+            {/* Ticks */}
             <div className="absolute left-0 right-0 top-1/2 pointer-events-none">
               {Array.from({ length: 11 }).map((_, i) => {
+                if (i === 0 || i === 10) return null
                 const isMajor = i % 2 === 0
 
                 return (
@@ -45,7 +47,7 @@ export function RatingSlider({ selectedRating, setSelectedRating }: RatingSlider
                 )
               })}
             </div>
-            <Slider.Thumb className="block w-3 h-3 bg-teal-500 rounded-full" />
+            <Slider.Thumb className="block w-4 h-4 bg-teal-500 rounded-full" />
         </Slider.Root>
         <div className="flex justify-between text-sm text-gray-500 mt-1">
             <span>4</span>
@@ -59,7 +61,7 @@ export function RatingSlider({ selectedRating, setSelectedRating }: RatingSlider
 export function CostSlider({ selectedCost, setSelectedCost }: CostSliderProps) {
   return (
     <div className='p-4'>
-        <span className="font-semibold">Up to ${selectedCost}</span>
+        <span className="block font-semibold mb-2">Up to ${selectedCost}</span>
         <Slider.Root
             className="relative flex items-center w-full h-4 select-none touch-none"
             value={[selectedCost]}
@@ -71,8 +73,11 @@ export function CostSlider({ selectedCost, setSelectedCost }: CostSliderProps) {
             <Slider.Track className="bg-gray-300 relative grow rounded-full h-2">
                 <Slider.Range className="absolute bg-teal-500 rounded-full h-full" />
             </Slider.Track>
+            {/* Ticks */}
             <div className="absolute left-0 right-0 top-1/2 pointer-events-none">
               {Array.from({ length: 5 }).map((_, i) => {
+                if (i === 0 || i === 4) return null
+
                 return (
                   <span
                     key={`cost-${i}`}
@@ -89,9 +94,7 @@ export function CostSlider({ selectedCost, setSelectedCost }: CostSliderProps) {
         </Slider.Root>
         <div className="flex justify-between text-sm text-gray-500 mt-1">
             <span>20</span>
-            {/* <span>25</span> */}
             <span>30</span>
-            {/* <span>35</span> */}
             <span>40</span>
         </div>
     </div>

@@ -8,7 +8,7 @@ interface CuisineTagsProps {
 export function CuisineTags({ selectedCuisines, setSelectedCuisines }: CuisineTagsProps) {
   return (
       <div className="flex flex-col items-center gap-4">
-        <span className="font-semibold">Cuisine</span>
+        <span className="font-semibold text-xl">Cuisine Types</span>
         <div className="flex gap-2 mt-1">
           <button
             className="text-sm px-2 py-1 border rounded bg-gray-100 hover:bg-gray-200"

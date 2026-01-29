@@ -4,11 +4,14 @@ import type { TopRestaurant } from "../types/metrics"
 import type { SortKey } from "../types/metrics"
 import { cuisineOptions } from "../constants/customerView"
 
+const defaultRating = 4.5
+const defaultCost = 40
+
 export function useTopRatedRestaurants(initialData: TopRestaurant[]) {
   const [topRatedData, setTopRatedData] = useState<TopRestaurant[]>(initialData)
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>(cuisineOptions)
-  const [selectedRating, setSelectedRating] = useState<number>(4.5)
-  const [selectedCost, setSelectedCost] = useState<number>(40)
+  const [selectedRating, setSelectedRating] = useState<number>(defaultRating)
+  const [selectedCost, setSelectedCost] = useState<number>(defaultCost)
   const [sortKey, setSortKey] = useState<SortKey>("avg_rating")
   const [visibleCount, setVisibleCount] = useState<number>(10)
 
@@ -43,6 +46,13 @@ export function useTopRatedRestaurants(initialData: TopRestaurant[]) {
     )
   }, [visibleRestaurants, sortKey])
 
+  // Reset filters
+  const resetFilters = () => {
+    setSelectedCuisines(cuisineOptions)
+    setSelectedRating(defaultRating)
+    setSelectedCost(defaultCost)
+  }
+
   return {
     data: sortedData,
     filteredCount: filteredData.length,
@@ -56,6 +66,7 @@ export function useTopRatedRestaurants(initialData: TopRestaurant[]) {
     sortKey,
     setSortKey,
     visibleCount,
-    setVisibleCount
+    setVisibleCount,
+    resetFilters
   }
 }

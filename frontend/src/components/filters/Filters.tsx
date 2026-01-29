@@ -18,7 +18,7 @@ const Filters: React.FC<FilterProps> = ({
 }: FilterProps) => {
 
   return (
-    <div className="flex flex-col gap-4 p-5 sticky top-0 h-screen overflow-auto">
+    <div className="flex flex-col absolute gap-4 p-5 sticky top-0 h-screen overflow-auto">
       <RatingSlider
         selectedRating={selectedRating}
         setSelectedRating={setSelectedRating}
