@@ -4,7 +4,7 @@ import type { TopRestaurant } from "../types/metrics"
 import type { SortKey } from "../types/metrics"
 import { cuisineOptions } from "../constants/customerView"
 
-const defaultRating = 4.5
+const defaultRating = 4
 const defaultCost = 40
 
 export function useTopRatedRestaurants(initialData: TopRestaurant[]) {

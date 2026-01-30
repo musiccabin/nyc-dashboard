@@ -100,7 +100,7 @@ cur.execute("""
         END AS higher_day_type
     FROM orders
     GROUP BY restaurant_name
-    HAVING COUNT(*) >= 2 AND AVG(rating) >= 4;
+    HAVING COUNT(*) >= 2 AND AVG(rating) >= 3.5;
     """)
 
 

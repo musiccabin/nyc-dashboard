@@ -1,5 +1,6 @@
 import React from "react"
-import { RatingSlider, CostSlider } from "./Sliders"
+import { RatingSlider } from "./RatingSlider"
+import { CostSlider } from "./CostSlider"
 import { CuisineTags } from "./CuisineTags"
 
 interface FilterProps {
